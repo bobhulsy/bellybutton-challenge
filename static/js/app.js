@@ -1,5 +1,5 @@
 // Get the endpoint
-const url = "https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.jsonnpm install d3npm install d3";
+const url = "https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json";
 
 
 // Fetch the JSON data and console log it
