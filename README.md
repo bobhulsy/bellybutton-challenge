@@ -18,6 +18,5 @@ Technologies
 D3.js
 Plotly.js
 Bootstrap
-How to Use
 
 Select a Test Subject ID to see their unique microbial data and visualizations.
