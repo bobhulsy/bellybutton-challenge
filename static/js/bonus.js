@@ -1,30 +1,43 @@
-// Fetch the JSON data and console log it
-d3.json(url).then(function(data) {
-    console.log(data);
+const url = "https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json";
+
+// Function to fetch and process all data
+function fetchData() {
+  return d3.json(url).then(data => {
+    return {
+      names: data.names,
+      samples: data.samples,
+      metadata: data.metadata
+    };
   });
-  
-  // Initialize the dashboard at start up 
-  function init() {
-  
-      // Use D3 to select the dropdown menu
-      let dropdownMenu = d3.select("#selDataset");
-  
-      // Use D3 to get sample names and populate the drop-down selector
-      d3.json(url).then((data) => {
-          
-          // Set a variable for the sample names
-          let names = data.names;
-  
-          // Add  samples to dropdown menu
-          names.forEach((id) => {
-  
-              // Log the value of id for each iteration of the loop
-              console.log(id);
-  
-              dropdownMenu.append("option")
-              .text(id)
-              .property("value",id);
-          });
+}
+
+// Function to build initial plots
+function buildCharts(sampleId, data) {
+  buildMetadata(sampleId, data.metadata);
+  buildBarChart(sampleId, data.samples);
+  buildBubbleChart(sampleId, data.samples);
+  buildGaugeChart(sampleId, data.metadata);
+}
+
+// Function to update all charts when a new sample is selected
+function optionChanged(newSampleId) {
+  fetchData().then(data => buildCharts(newSampleId, data));
+}
+
+// Initializes the dashboard 
+function init() {
+  // Fetch data only once at the start
+  fetchData().then(data => {
+    // Populate the dropdown
+    const dropdownMenu = d3.select("#selDataset");
+    data.names.forEach(id => dropdownMenu.append("option").text(id).property("value", id));
+
+    // Build initial plots using the first sample
+    const initialSampleId = data.names[0];
+    buildCharts(initialSampleId, data);
+  });
+}
+
   
           // Set the first sample from the list
           let sample_one = names[0];
