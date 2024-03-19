@@ -1,157 +1,198 @@
-// Get the endpoint
 const url = "https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json";
 
-
-// Fetch the JSON data and console log it
-d3.json(url).then(function(data) {
-    console.log(data);
-  });
-  
-  
-// Initialize the dashboard at start up 
+var csvData;
+// Initialize the function 
 function init() {
 
-    // Use D3 to select the dropdown menu
-    let dropdownMenu = d3.select("#selDataset");
+  // Use D3 to select the dropdown menu
+  
 
-    // Use D3 to get sample names and populate the drop-down selector
-    d3.json(url).then((data) => {
-        
-        // Set a variable for the sample names
-        let names = data.names;
+  // Use D3 to get the options for drop down Menu
+  d3.json(url).then((data) => {
+    csvData = data;  
+    // fill drop down
+    // draw chart 
+    fillDrowpDown(csvData);
 
-        // Add  samples to dropdown menu
-        names.forEach((id) => {
+  });
+};
 
-            // Log the value of id for each iteration of the loop
-            console.log(id);
+function fillDrowpDown(data){
+  let dropdownMenu = d3.select("#selDataset");
+    // Set a variable for the sample names
+  let names = data.names;
 
-            dropdownMenu.append("option")
-            .text(id)
-            .property("value",id);
-        });
+  // Add  samples to dropdown menu
+  names.forEach((id) => {
 
-        // Set the first sample from the list
-        let sample_one = names[0];
+      // Log the value of id 
+      console.log(id);
 
-        // Log the value of sample_one
-        console.log(sample_one);
+      dropdownMenu.append("option")
+      .text(id)
+      .property("value",id);
+  });
 
-        // Build the initial plots
-        buildMetadata(sample_one);
-        buildBarChart(sample_one);
-        buildBubbleChart(sample_one);
-        buildGaugeChart(sample_one);
+  // Set the first sample from the list
+  let sample_one = names[0];
+  buildDashboard(sample_one, data);
+}
+// Function that populates metadata info
+function buildMetadata(sample, data) {
 
-    });
+  // Retrieve all metadata
+  let metadata = data.metadata;
+
+  // Filter based on the value of the sample
+  let value = metadata.filter(result => result.id == sample);
+
+  console.log(value)
+
+  // Get the first index from the array
+  let valueData = value[0];
+
+  // Clear out metadata
+  d3.select("#sample-metadata").html("");
+
+  // Use Object.entries to add each key/value pair to the panel
+
+  Object.entries(valueData).forEach(([key,value]) => {
+
+      // Log the individual key/value pairs as they are being appended to the metadata panel
+      console.log(key,value);
+
+      d3.select("#sample-metadata").append("h5").text(`${key}: ${value}`);
+  });
+
 };
 
 // Function that builds the bar chart
-function buildBarChart(sample) {
+function buildBarChart(sample, data) {
 
-    // Use D3 to retrieve all of the data
-    d3.json(url).then((data) => {
 
-        // Retrieve all sample data
-        let sampleInfo = data.samples;
+  let sampleInfo = data.samples;
 
-        // Filter based on the value of the sample
-        let value = sampleInfo.filter(result => result.id == sample);
+  // Filter based on the value of the sample
+  let value = sampleInfo.filter(result => result.id == sample);
 
-        // Get the first index from the array
-        let valueData = value[0];
+  // Get the first index from the array
+  let valueData = value[0];
 
-        // Get the otu_ids, lables, and sample values
-        let otu_ids = valueData.otu_ids;
-        let otu_labels = valueData.otu_labels;
-        let sample_values = valueData.sample_values;
+  // Get the otu_ids, lables, and sample values
+  let otu_ids = valueData.otu_ids;
+  let otu_labels = valueData.otu_labels;
+  let sample_values = valueData.sample_values;
 
-        // Log the data to the console
-        console.log(otu_ids,otu_labels,sample_values);
+  // Log the data to the console
+  console.log(otu_ids,otu_labels,sample_values);
 
-        // Set top ten items to display in descending order
-        let yticks = otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse();
-        let xticks = sample_values.slice(0,10).reverse();
-        let labels = otu_labels.slice(0,10).reverse();
-        
-        // Set up the trace for the bar chart
-        let trace = {
-            x: xticks,
-            y: yticks,
-            text: labels,
-            type: "bar",
-            orientation: "h"
-        };
+  // Set top ten items to display in descending order
+  let yticks = otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse();
+  let xticks = sample_values.slice(0,10).reverse();
+  let labels = otu_labels.slice(0,10).reverse();
+  
+  // Set up the trace for the bar chart
+  let trace = {
+      x: xticks,
+      y: yticks,
+      text: labels,
+      type: "bar",
+      orientation: "h"
+  };
 
-        // Setup the layout
-        let layout = {
-            title: "Top 10 OTUs Present"
-        };
-
-        // Call Plotly to plot the bar chart
-        Plotly.newPlot("bar", [trace], layout)
-    });
+  // Call Plotly to plot the bar chart
+  Plotly.newPlot("bar", [trace])
 };
-
 
 // Function that builds the bubble chart
-function buildBubbleChart(sample) {
+function buildBubbleChart(sample, data) {
 
-    // Use D3 to retrieve all of the data
-    d3.json(url).then((data) => {
-        
-        // Retrieve all sample data
-        let sampleInfo = data.samples;
+   // Retrieve all sample data
+   let sampleInfo = data.samples;
 
-        // Filter based on the value of the sample
-        let value = sampleInfo.filter(result => result.id == sample);
+   // Filter based on the value of the sample
+   let value = sampleInfo.filter(result => result.id == sample);
 
-        // Get the first index from the array
-        let valueData = value[0];
+   // Get the first index from the array
+   let valueData = value[0];
 
-        // Get the otu_ids, lables, and sample values
-        let otu_ids = valueData.otu_ids;
-        let otu_labels = valueData.otu_labels;
-        let sample_values = valueData.sample_values;
+   // Get the otu_ids, lables, and sample values
+   let otu_ids = valueData.otu_ids;
+   let otu_labels = valueData.otu_labels;
+   let sample_values = valueData.sample_values;
 
-        // Log the data to the console
-        console.log(otu_ids,otu_labels,sample_values);
-        
-        // Set up the trace for bubble chart
-        let trace1 = {
-            x: otu_ids,
-            y: sample_values,
-            text: otu_labels,
-            mode: "markers",
-            marker: {
-                size: sample_values,
-                color: otu_ids,
-                colorscale: "Earth"
-            }
-        };
-        // Set up the layout
-        let layout = {
-            title: "Bacteria Per Sample",
-            hovermode: "closest",
-            xaxis: {title: "OTU ID"},
-        };
+   // Log the data to the console
+   console.log(otu_ids,otu_labels,sample_values);
+   
+   // Set up the trace for bubble chart
+   let trace1 = {
+       x: otu_ids,
+       y: sample_values,
+       text: otu_labels,
+       mode: "markers",
+       marker: {
+           size: sample_values,
+           color: otu_ids,
+           colorscale: "Earth"
+       }
+   };
 
-        // Call Plotly to plot the bubble chart
-        Plotly.newPlot("bubble", [trace1], layout)
-    });
+   // Set up the layout
+   let layout = {
+       hovermode: "closest",
+       xaxis: {title: "OTU ID"},
+   };
+
+   // Call Plotly to plot the bubble chart
+   Plotly.newPlot("bubble", [trace1], layout)
 };
 
+// Function that builds the Gauge chart
+
+function buildGaugeChart(sample, data) {
+ 
+  let sampleInfo = data.metadata;
+  // Filter based on the value of the sample
+  let value = sampleInfo.find(result => result.id == sample);
+  console.log('Filtered value by id', value), value.wfreq;  
+  let freq=value.wfreq
+  let trace2 = [{
+    domain: { x: [0, 1], y: [0, 1] },
+    value: freq,
+    title: '<b> Belly Button Washing Frequency </b> <br></br> Scrubs Per Week',
+    type: "indicator",
+    mode: "gauge+number",
+    gauge: {
+    axis: { range: [null, 9] },
+    steps: [
+    { range: [0, 2], color: "white",text:"0-1" },
+    { range: [2, 4], color: "lightgray",text:"1-2" },
+    { range: [4, 6], color: "gray",text:"2-3" },
+    { range: [6, 8], color: "lightblue",text:"3-4" },
+    { range: [8, 10], color: "babyblue",text:"4-5" },
+    { range: [5, 6], color: "blue",text:"5-6" },
+    { range: [6, 7], color: "lightred",text:"6-7" },
+    { range: [7, 8], color: "red",text:"7-8" },
+    { range: [8, 9], color: "black",text:"8-9" }
+    ]
+    }
+  }];
+    let layout = { width: 600, height: 450, margin: { t: 0, b: 0 } };
+    Plotly.newPlot('gauge', trace2, layout);
+
+}
+
 // Function that updates dashboard when sample is changed
-function optionChanged(value) { 
+function buildDashboard(value) { 
 
-    // Log the new value
-    console.log(value); 
+  // Log the new value
+  console.log(value); 
 
-    // Call all functions 
-    buildMetadata(value);
-    buildBarChart(value);
-    buildBubbleChart(value);
-    buildGaugeChart(value);
+  // Call all functions 
+  buildMetadata(value, csvData);
+  buildBarChart(value, csvData);
+  buildBubbleChart(value, csvData);
+  buildGaugeChart(value, csvData);
 };
 
 // Call the initialize function
