@@ -129,3 +129,14 @@ function buildBubbleChart(sample) {
                 colorscale: "Earth"
             }
         };
+        // Set up the layout
+        let layout = {
+            title: "Bacteria Per Sample",
+            hovermode: "closest",
+            xaxis: {title: "OTU ID"},
+        };
+
+        // Call Plotly to plot the bubble chart
+        Plotly.newPlot("bubble", [trace1], layout)
+    });
+};
