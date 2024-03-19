@@ -1,0 +1,63 @@
+:root {
+    --light-bg: #f8f9fa;
+    --primary-color: #007bff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --small-padding: 10px;
+    --medium-padding: 20px;
+}
+
+body {
+    background-color: var(--light-bg);
+    font-family: 'Roboto', sans-serif;
+}
+
+.jumbotron,
+.btn-primary,
+.panel-primary>.panel-heading,
+.border {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.well,
+.panel,
+.border {
+    border: none;
+    box-shadow: 0 0 15px var(--shadow-color);
+}
+
+.form-select {
+    border-radius: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .jumbotron h1,
+    .col text-center h1 {
+        font-size: 24px;
+    }
+}
+
+#bubble {
+    margin-top: var(--small-padding);
+}
+
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    padding: var(--medium-padding);
+}
+
+.charts-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: stretch;
+    margin: var(--medium-padding) 0;
+}
+
+.chart-card {
+    flex: 1;
+    padding: var(--small-padding);
+    box-shadow: 0 0 var(--small-padding) var(--shadow-color);
+    margin: var(--small-padding);
+}

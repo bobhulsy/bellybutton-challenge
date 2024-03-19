@@ -1,17 +1,17 @@
 function buildGaugeChart(sample) {
-    d3.json("https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json").then((data) => {
+    d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then((data) => {
       var metadata = data.metadata;
       var result = metadata.find(sampleObj => sampleObj.id == sample);
       var wfreq = result.wfreq;
   
-      // Calculate angle for needle
+      // Calculate angle of needle
       var degrees = 180 - (wfreq * 20),
         radius = .5;
       var radians = degrees * Math.PI / 180;
       var x = radius * Math.cos(radians);
       var y = radius * Math.sin(radians);
   
-      // Path for the needle
+      // Needle path
       var mainPath = 'M -.0 -0.025 L .0 0.025 L ',
         pathX = String(x),
         space = ' ',
