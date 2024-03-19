@@ -1,4 +1,9 @@
 import * as d3 from 'd3';
+<script src="https://d3js.org/d3.v5.min.js"></script>
+
+import * as Plotly from 'plotly.js';
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
 // Establish url as a global variable
 const url = ("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json");
 
